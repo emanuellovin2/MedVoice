@@ -1359,6 +1359,99 @@ mark.search-hl {
   background: color-mix(in srgb, var(--color-surface) 85%, transparent);
 }
 
+/* ════════════════════════════════════════
+   FEATURE: AI Correction
+   ════════════════════════════════════════ */
+
+/* Dot indicator pe butonul de setări */
+.ai-enabled-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--color-success);
+  border-radius: 50%;
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  border: 1.5px solid var(--color-surface);
+  pointer-events: none;
+}
+
+/* Confirm button — stare procesare AI */
+.btn-confirm.ai-processing {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  box-shadow: 0 8px 24px -6px rgba(99,102,241,0.45);
+  cursor: not-allowed;
+  animation: none;
+  gap: 8px;
+}
+
+/* AI revert row */
+.ai-revert-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+  animation: confirmIn 0.2s var(--ease-spring);
+}
+.ai-corrected-badge {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
+  border-radius: 99px;
+  padding: 3px 10px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.btn-ai-revert {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 99px;
+  padding: 3px 12px;
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: var(--color-muted);
+  cursor: pointer;
+  font-family: var(--font);
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.15s, color 0.15s;
+}
+.btn-ai-revert:hover,
+.btn-ai-revert:active { border-color: var(--color-danger); color: var(--color-danger); }
+
+/* AI Settings modal */
+.modal-desc {
+  font-size: 0.84rem;
+  color: var(--color-muted);
+  line-height: 1.55;
+}
+.api-key-wrap {
+  position: relative;
+}
+.btn-show-key {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-show-key:hover { color: var(--color-text); }
+.modal-key-hint {
+  font-size: 0.78rem;
+  color: var(--color-muted);
+  min-height: 18px;
+  transition: color 0.2s;
+}
+
 /* ── Utilities ──────────────────────── */
 .hidden { display: none !important; }
 

@@ -8,6 +8,7 @@
   let _templateId      = null;
   let _autoAdvance     = false;
   let _lockedFields    = {}; // { fieldKey: value }
+  let _aiCorrectedText = null; // { corrected, original } când corecția AI așteaptă confirmare
 
   const $ = (id) => document.getElementById(id);
 
@@ -688,6 +689,12 @@
 
   async function setActiveField(idx) {
     _currentIdx = Math.min(idx, _fieldDefs.length - 1);
+
+    // Resetăm starea AI la fiecare navigare între câmpuri
+    _aiCorrectedText = null;
+    hideAiRevert();
+    setConfirmProcessing(false);
+
     const { key, label } = _fieldDefs[_currentIdx];
 
     $('current-field-name').textContent = label;
@@ -779,6 +786,40 @@
   function showConfirm() { $('btn-confirm-field').classList.remove('hidden'); }
   function hideConfirm() { $('btn-confirm-field').classList.add('hidden'); }
 
+  // ── AI helpers ────────────────────────────────────────────
+  const _BTN_CONFIRM_DEFAULT_HTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Gata — salvează câmpul`;
+
+  function setConfirmProcessing(on) {
+    const btn = $('btn-confirm-field');
+    if (!btn) return;
+    if (on) {
+      btn.disabled = true;
+      btn.classList.add('ai-processing');
+      btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex-shrink:0">
+        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="40 20">
+          <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.9s" repeatCount="indefinite"/>
+        </circle>
+      </svg> AI corectează...`;
+    } else {
+      btn.disabled = false;
+      btn.classList.remove('ai-processing');
+      btn.innerHTML = _BTN_CONFIRM_DEFAULT_HTML;
+    }
+  }
+
+  function showAiRevert() {
+    const row = $('ai-revert-row');
+    if (row) row.classList.remove('hidden');
+  }
+
+  function hideAiRevert() {
+    const row = $('ai-revert-row');
+    if (row) row.classList.add('hidden');
+  }
+
   $('transcript-edit').addEventListener('input', () => {
     if ($('transcript-edit').value.trim()) showConfirm(); else hideConfirm();
   });
@@ -791,22 +832,68 @@
     toast(_autoAdvance ? '⚡ Auto-avans activat' : 'Auto-avans dezactivat', 'info', 1600);
   });
 
-  $('btn-confirm-field').addEventListener('click', () => confirmField(_autoAdvance));
+  $('btn-confirm-field').addEventListener('click', () => {
+    if (_aiCorrectedText !== null) {
+      doSaveField(_autoAdvance);
+    } else {
+      confirmField(_autoAdvance);
+    }
+  });
 
   async function confirmField(autoStartVoice = false) {
-    const text = $('transcript-edit').value.trim();
-    if (!text) { toast('Câmpul este gol.', 'error', 1800); return; }
+    const originalText = $('transcript-edit').value.trim();
+    if (!originalText) { toast('Câmpul este gol.', 'error', 1800); return; }
 
     if (Voice.isRecording()) Voice.stop();
 
+    const capturedIdx        = _currentIdx;
+    const { key, label }     = _fieldDefs[capturedIdx];
+
+    if (AI.isEnabled()) {
+      setConfirmProcessing(true);
+      try {
+        const corrected = await AI.processField(key, label, originalText);
+        if (_currentIdx !== capturedIdx) return; // utilizatorul a navigat între timp
+
+        const fixed = (corrected || '').trim();
+        if (fixed && fixed !== originalText) {
+          // Textul a fost corectat — afișăm și așteptăm confirmarea
+          _aiCorrectedText = { corrected: fixed, original: originalText };
+          $('transcript-edit').value = fixed;
+          setConfirmProcessing(false);
+          showAiRevert();
+          if (autoStartVoice) {
+            // Auto-avans: confirmăm automat după 1.4s
+            setTimeout(() => {
+              if (_currentIdx === capturedIdx && _aiCorrectedText !== null) doSaveField(autoStartVoice);
+            }, 1400);
+          }
+          return;
+        }
+      } catch (_) {
+        // Fallback silențios — salvăm textul original
+      }
+      if (_currentIdx !== capturedIdx) return;
+      setConfirmProcessing(false);
+    }
+
+    doSaveField(autoStartVoice);
+  }
+
+  async function doSaveField(autoStartVoice = false) {
+    const text = $('transcript-edit').value.trim();
+    if (!text) { toast('Câmpul este gol.', 'error', 1800); return; }
+
     const { key, label } = _fieldDefs[_currentIdx];
+    _aiCorrectedText = null;
+    hideAiRevert();
+
     saveCurrentField(text);
     haptic(20);
     toast(`✓ ${label} salvat`, 'success', 1500);
     hideConfirm();
     renderSuggestions([]);
 
-    // Autosave draft + înregistrare valoare frecventă
     Storage.saveDraft(_templateId, { ..._fields }).catch(() => {});
     Storage.addSuggestion(key, text).catch(() => {});
 
@@ -929,6 +1016,8 @@
   // ── Session / navigation ──────────────────────────────────
   $('btn-new-session').addEventListener('click', async () => {
     if (Voice.isRecording()) Voice.stop();
+    _aiCorrectedText = null;
+    hideAiRevert();
     _fieldDefs.forEach(({ key }) => (_fields[key] = _lockedFields[key] || ''));
     _currentIdx = 0;
     await Storage.clearDraft(_templateId);
@@ -942,6 +1031,9 @@
 
   $('btn-back-upload').addEventListener('click', () => {
     if (Voice.isRecording()) Voice.stop();
+    _aiCorrectedText = null;
+    hideAiRevert();
+    setConfirmProcessing(false);
     showScreen('upload');
     initUploadScreen();
   });
@@ -1091,6 +1183,78 @@
     initUploadScreen();
   });
 
+  // ── AI Revert button ──────────────────────────────────────
+  $('btn-ai-revert').addEventListener('click', () => {
+    if (_aiCorrectedText) {
+      $('transcript-edit').value = _aiCorrectedText.original;
+      _aiCorrectedText = null;
+      hideAiRevert();
+      doSaveField(_autoAdvance); // salvează originalul și avansează
+    }
+  });
+
+  // ── AI Settings modal ─────────────────────────────────────
+  function openAiSettings() {
+    $('modal-ai-key-input').value = AI.getKey();
+    refreshAiKeyHint($('modal-ai-key-input').value);
+    $('modal-ai-settings').classList.remove('hidden');
+    setTimeout(() => $('modal-ai-key-input').focus(), 80);
+  }
+
+  function closeAiSettings() {
+    $('modal-ai-settings').classList.add('hidden');
+  }
+
+  function refreshAiKeyHint(val) {
+    const hint = $('modal-ai-key-hint');
+    if (!hint) return;
+    const k = (val || '').trim();
+    if (!k) {
+      hint.textContent = 'Fără cheie — corecția AI este dezactivată.';
+      hint.style.color = '';
+    } else if (!k.startsWith('sk-ant-')) {
+      hint.textContent = '⚠ Cheia trebuie să înceapă cu sk-ant-';
+      hint.style.color = 'var(--color-danger)';
+    } else {
+      hint.textContent = '✓ Cheie validă — AI activ.';
+      hint.style.color = 'var(--color-success)';
+    }
+  }
+
+  function updateAiDot() {
+    const btn = $('btn-open-ai-settings');
+    if (!btn) return;
+    let dot = btn.querySelector('.ai-enabled-dot');
+    if (AI.isEnabled()) {
+      if (!dot) {
+        dot = document.createElement('span');
+        dot.className = 'ai-enabled-dot';
+        btn.appendChild(dot);
+      }
+    } else if (dot) {
+      dot.remove();
+    }
+  }
+
+  $('btn-open-ai-settings').addEventListener('click', openAiSettings);
+  $('modal-ai-backdrop').addEventListener('click', closeAiSettings);
+  $('modal-ai-cancel').addEventListener('click', closeAiSettings);
+  $('modal-ai-save').addEventListener('click', () => {
+    AI.setKey($('modal-ai-key-input').value);
+    closeAiSettings();
+    toast(AI.isEnabled() ? '✓ Corecție AI activată' : 'AI dezactivat', AI.isEnabled() ? 'success' : 'info', 2200);
+    updateAiDot();
+  });
+  $('btn-show-key').addEventListener('click', () => {
+    const inp = $('modal-ai-key-input');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+  });
+  $('modal-ai-key-input').addEventListener('input', (e) => refreshAiKeyHint(e.target.value));
+  $('modal-ai-key-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter')  $('modal-ai-save').click();
+    if (e.key === 'Escape') closeAiSettings();
+  });
+
   // ── Service Worker ────────────────────────────────────────
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/service-worker.js').catch(() => {});
@@ -1098,6 +1262,7 @@
 
   // ── Init ──────────────────────────────────────────────────
   initTheme();
+  updateAiDot();
   initUploadScreen();
 
   if (!navigator.share) {

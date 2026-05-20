@@ -1,4 +1,4 @@
-const CACHE_NAME = 'medvoice-v31';
+const CACHE_NAME = 'medvoice-v32';
 const CACHE_ASSETS = [
   '/',
   '/index.html',
@@ -7,6 +7,7 @@ const CACHE_ASSETS = [
   '/js/template.js',
   '/js/voice.js',
   '/js/docgen.js',
+  '/js/ai.js',
   '/js/app.js',
   '/manifest.json',
   '/icons/icon-192.png',

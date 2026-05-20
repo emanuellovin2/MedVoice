@@ -38,6 +38,12 @@
         <p class="greeting-date" id="greeting-date">—</p>
       </div>
       <div class="home-header-actions">
+        <button class="btn-icon" id="btn-open-ai-settings" title="Setări AI" aria-label="Setări AI" style="position:relative">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
         <button class="btn-icon" id="btn-theme-toggle" title="Schimbă tema" aria-label="Schimbă tema">
           <svg class="icon-sun" width="22" height="22" viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="2"/>
@@ -170,6 +176,12 @@
 
       <!-- Sugestii valori frecvente -->
       <div id="suggestions-container" class="suggestions-container hidden"></div>
+
+      <!-- AI revert row — apare după corecție automată -->
+      <div id="ai-revert-row" class="ai-revert-row hidden">
+        <span class="ai-corrected-badge">✨ AI corectat</span>
+        <button class="btn-ai-revert" id="btn-ai-revert" type="button">↩ Original</button>
+      </div>
 
       <button class="btn btn-confirm hidden" id="btn-confirm-field">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -327,6 +339,31 @@
     </div>
   </div>
 
+  <!-- MODAL AI Settings -->
+  <div id="modal-ai-settings" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-ai-title">
+    <div class="modal-backdrop" id="modal-ai-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-title" id="modal-ai-title">Corecție AI</div>
+      <p class="modal-desc">Cheie API Anthropic pentru corectarea automată a textului dictat. Stocată local pe dispozitiv, nu se transmite nicăieri.</p>
+      <div class="api-key-wrap">
+        <input id="modal-ai-key-input" class="modal-textarea" type="password"
+               style="min-height:0;height:48px;resize:none;font-family:monospace;font-size:0.85rem;letter-spacing:0.02em;padding-right:44px"
+               placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false" />
+        <button class="btn-show-key" id="btn-show-key" type="button" aria-label="Arată/ascunde cheia">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </button>
+      </div>
+      <p class="modal-key-hint" id="modal-ai-key-hint"></p>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="modal-ai-cancel">Anulează</button>
+        <button class="btn btn-primary" id="modal-ai-save">Salvează</button>
+      </div>
+    </div>
+  </div>
+
   <!-- PRINT: vizibil doar la @media print -->
   <div id="print-container" aria-hidden="true"></div>
 
@@ -343,6 +380,7 @@
   <script src="js/template.js"></script>
   <script src="js/voice.js"></script>
   <script src="js/docgen.js"></script>
+  <script src="js/ai.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

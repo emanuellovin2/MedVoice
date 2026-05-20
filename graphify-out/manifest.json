@@ -1,0 +1,82 @@
+{
+  "/Users/lovinemanuel/Desktop/MedVoice/manifest.json": {
+    "mtime": 1779221746.346868,
+    "ast_hash": "695543fc16ddbd73b3b422f0f740bb48",
+    "semantic_hash": "695543fc16ddbd73b3b422f0f740bb48"
+  },
+  "/Users/lovinemanuel/Desktop/MedVoice/service-worker.js": {
+    "mtime": 1779275366.970426,
+    "ast_hash": "35829973553406f4d11633aa24a39307",
+    "semantic_hash": "35829973553406f4d11633aa24a39307"
+  },
+  "/Users/lovinemanuel/Desktop/MedVoice/.vercel/project.json": {
+    "mtime": 1779223303.8193572,
+    "ast_hash": "48bc61d2188bc2852a2b2dc8d3613f0f",
+    "semantic_hash": "48bc61d2188bc2852a2b2dc8d3613f0f"
+  },
+  "/Users/lovinemanuel/Desktop/MedVoice/js/docgen.js": {
+    "mtime": 1779277057.173423,
+    "ast_hash": "4b4e1ae5d57ad47fd549906def6a8033",
+    "semantic_hash": "4b4e1ae5d57ad47fd549906def6a8033"
+  },
+  "/Users/lovinemanuel/Desktop/MedVoice/js/voice.js": {
+    "mtime": 1779266491.1984406,
+    "ast_hash": "74d3730a7a7759956856423fe43e0d4b",
+    "semantic_hash": "74d3730a7a7759956856423fe43e0d4b"
+  },
+  "/Users/lovinemanuel/Desktop/MedVoice/js/template.js": {
+    "mtime": 1779228248.1554415,
+    "ast_hash": "f957fc18b0bf1befa12f9ae1f7b25b86",
+    "semantic_hash": "f957fc18b0bf1befa12f9ae1f7b25b86"
+  },
+  "/Users/lovinemanuel/Desktop/MedVoice/js/app.js": {
+    "mtime": 1779277237.7362578,
+    "ast_hash": "6e04ba0d1cd40db7df5a4920e39b8380",
+    "semantic_hash": "6e04ba0d1cd40db7df5a4920e39b8380"
+  },
+  "/Users/lovinemanuel/Desktop/MedVoice/js/storage.js": {
+    "mtime": 1779277085.0343187,
+    "ast_hash": "1b9f2a848ff1ac7a7cab1da2714afe11",
+    "semantic_hash": "1b9f2a848ff1ac7a7cab1da2714afe11"
+  },
+  "/Users/lovinemanuel/Desktop/MedVoice/.claude/settings.local.json": {
+    "mtime": 1779275879.3189986,
+    "ast_hash": "0686a843ee2b3507ffec221de40b0a45",
+    "semantic_hash": "0686a843ee2b3507ffec221de40b0a45"
+  },
+  "/Users/lovinemanuel/Desktop/MedVoice/index.html": {
+    "mtime": 1779277107.251073,
+    "ast_hash": "cb5584fd8094eb215be89e9f2e6c9ad9",
+    "semantic_hash": "cb5584fd8094eb215be89e9f2e6c9ad9"
+  },
+  "/Users/lovinemanuel/Desktop/MedVoice/context.md": {
+    "mtime": 1779221472.2255132,
+    "ast_hash": "d54c5a07aca1ff9e0c78d34d1efeb53a",
+    "semantic_hash": "d54c5a07aca1ff9e0c78d34d1efeb53a"
+  },
+  "/Users/lovinemanuel/Desktop/MedVoice/.vercel/README.txt": {
+    "mtime": 1779223303.8199012,
+    "ast_hash": "2b13c79d37d6ed82a3255b83b6815034",
+    "semantic_hash": "2b13c79d37d6ed82a3255b83b6815034"
+  },
+  "/Users/lovinemanuel/Desktop/MedVoice/icons/icon-192.png": {
+    "mtime": 1779222933.3933043,
+    "ast_hash": "3395ed00685984f787d83c144d22f720",
+    "semantic_hash": "3395ed00685984f787d83c144d22f720"
+  },
+  "/Users/lovinemanuel/Desktop/MedVoice/icons/icon.svg": {
+    "mtime": 1779221960.8323371,
+    "ast_hash": "35a091e499d7d055d17917a072f57abc",
+    "semantic_hash": "35a091e499d7d055d17917a072f57abc"
+  },
+  "/Users/lovinemanuel/Desktop/MedVoice/icons/icon-512.png": {
+    "mtime": 1779222933.430301,
+    "ast_hash": "4d6d0e5083eb38a6b6a82702bedf0141",
+    "semantic_hash": "4d6d0e5083eb38a6b6a82702bedf0141"
+  },
+  "/Users/lovinemanuel/Desktop/MedVoice/.claude/launch.json": {
+    "mtime": 1779275872.5389848,
+    "ast_hash": "6885fb98c44f3189e09a96466d43aa13",
+    "semantic_hash": "6885fb98c44f3189e09a96466d43aa13"
+  }
+}

@@ -863,15 +863,17 @@
           setConfirmProcessing(false);
           showAiRevert();
           if (autoStartVoice) {
-            // Auto-avans: confirmăm automat după 1.4s
             setTimeout(() => {
               if (_currentIdx === capturedIdx && _aiCorrectedText !== null) doSaveField(autoStartVoice);
             }, 1400);
           }
           return;
         }
-      } catch (_) {
-        // Fallback silențios — salvăm textul original
+        // AI a rulat dar textul era deja corect
+        toast('AI ✓ text deja corect', 'info', 1400);
+      } catch (err) {
+        if (_currentIdx !== capturedIdx) return;
+        toast(`AI eroare: ${err.message || 'request eșuat'}`, 'error', 5000);
       }
       if (_currentIdx !== capturedIdx) return;
       setConfirmProcessing(false);

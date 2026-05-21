@@ -1,4 +1,4 @@
-const CACHE_NAME = 'medvoice-v32';
+const CACHE_NAME = 'medvoice-v33';
 const CACHE_ASSETS = [
   '/',
   '/index.html',

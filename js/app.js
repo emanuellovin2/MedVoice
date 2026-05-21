@@ -1195,68 +1195,6 @@
     }
   });
 
-  // ── AI Settings modal ─────────────────────────────────────
-  function openAiSettings() {
-    $('modal-ai-key-input').value = AI.getKey();
-    refreshAiKeyHint($('modal-ai-key-input').value);
-    $('modal-ai-settings').classList.remove('hidden');
-    setTimeout(() => $('modal-ai-key-input').focus(), 80);
-  }
-
-  function closeAiSettings() {
-    $('modal-ai-settings').classList.add('hidden');
-  }
-
-  function refreshAiKeyHint(val) {
-    const hint = $('modal-ai-key-hint');
-    if (!hint) return;
-    const k = (val || '').trim();
-    if (!k) {
-      hint.textContent = 'Fără cheie — corecția AI este dezactivată.';
-      hint.style.color = '';
-    } else if (!k.startsWith('sk-ant-')) {
-      hint.textContent = '⚠ Cheia trebuie să înceapă cu sk-ant-';
-      hint.style.color = 'var(--color-danger)';
-    } else {
-      hint.textContent = '✓ Cheie validă — AI activ.';
-      hint.style.color = 'var(--color-success)';
-    }
-  }
-
-  function updateAiDot() {
-    const btn = $('btn-open-ai-settings');
-    if (!btn) return;
-    let dot = btn.querySelector('.ai-enabled-dot');
-    if (AI.isEnabled()) {
-      if (!dot) {
-        dot = document.createElement('span');
-        dot.className = 'ai-enabled-dot';
-        btn.appendChild(dot);
-      }
-    } else if (dot) {
-      dot.remove();
-    }
-  }
-
-  $('btn-open-ai-settings').addEventListener('click', openAiSettings);
-  $('modal-ai-backdrop').addEventListener('click', closeAiSettings);
-  $('modal-ai-cancel').addEventListener('click', closeAiSettings);
-  $('modal-ai-save').addEventListener('click', () => {
-    AI.setKey($('modal-ai-key-input').value);
-    closeAiSettings();
-    toast(AI.isEnabled() ? '✓ Corecție AI activată' : 'AI dezactivat', AI.isEnabled() ? 'success' : 'info', 2200);
-    updateAiDot();
-  });
-  $('btn-show-key').addEventListener('click', () => {
-    const inp = $('modal-ai-key-input');
-    inp.type = inp.type === 'password' ? 'text' : 'password';
-  });
-  $('modal-ai-key-input').addEventListener('input', (e) => refreshAiKeyHint(e.target.value));
-  $('modal-ai-key-input').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter')  $('modal-ai-save').click();
-    if (e.key === 'Escape') closeAiSettings();
-  });
-
   // ── Service Worker ────────────────────────────────────────
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/service-worker.js').catch(() => {});
@@ -1264,7 +1202,6 @@
 
   // ── Init ──────────────────────────────────────────────────
   initTheme();
-  updateAiDot();
   initUploadScreen();
 
   if (!navigator.share) {
